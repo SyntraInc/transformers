@@ -1186,11 +1186,13 @@ class Wav2Vec2BertForSequenceClassification(Wav2Vec2BertPreTrainedModel):
     def forward(
         self,
         input_features: Optional[torch.Tensor],
+        input_ids: Optional[torch.Tensor] = None,
         attention_mask: Optional[torch.Tensor] = None,
         output_attentions: Optional[bool] = None,
         output_hidden_states: Optional[bool] = None,
         return_dict: Optional[bool] = None,
         labels: Optional[torch.Tensor] = None,
+        **kwargs
     ) -> Union[tuple, SequenceClassifierOutput]:
         r"""
         labels (`torch.LongTensor` of shape `(batch_size,)`, *optional*):
@@ -1202,6 +1204,9 @@ class Wav2Vec2BertForSequenceClassification(Wav2Vec2BertPreTrainedModel):
         return_dict = return_dict if return_dict is not None else self.config.use_return_dict
         output_hidden_states = True if self.config.use_weighted_layer_sum else output_hidden_states
 
+        if input_features is None and input_ids is not None:
+            input_features = input_ids
+            
         outputs = self.wav2vec2_bert(
             input_features,
             attention_mask=attention_mask,
